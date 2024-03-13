@@ -6,6 +6,7 @@
 #include "IMG.h"
 #include "Face1.h"
 #include "Face2.h"
+#include "Face3.h"
 #include "LED_Dot_Matrix12pt7b.h"
 #include "LED_Dot_Matrix4pt7b.h"
 #include "LED_Dot_Matrix6pt7b.h"
@@ -69,7 +70,7 @@ display.fillScreen(GxEPD_BLACK);
 //display.setTextColor(GxEPD_BLACK);
 
 
-display.drawBitmap(0, 0, face2, 200, 200, GxEPD_WHITE);
+display.drawBitmap(0, 0, face3, 200, 200, GxEPD_WHITE);
 
 // Set text properties before printing text
 display.setCursor(10, 10); // Set the position where you want to start printing text
