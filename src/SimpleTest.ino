@@ -66,17 +66,17 @@ void setup()
 display.init();
 display.setRotation(0);
 display.invertDisplay(true);
-// display.fillScreen(GxEPD_BLACK);
-display.setTextColor(GxEPD_BLACK);
+display.fillScreen(GxEPD_BLACK);
+display.setTextColor(GxEPD_WHITE);
 
 
 // Manually set the time: YYYY, MM, DD, HH, MM, SS
   struct tm newTime;
   newTime.tm_year = 2024 - 1900;  // Year - 1900
-  newTime.tm_mon = 4;             // Month, where 0 = january
+  newTime.tm_mon = 3;             // Month, where 0 = january
   newTime.tm_mday = 14;           // Day of the month
   newTime.tm_hour = 15;           // Hour
-  newTime.tm_min = 30;            // Minute
+  newTime.tm_min = 29;            // Minute
   newTime.tm_sec = 0;             // Second
   time_t t = mktime(&newTime);    // Convert to time_t format
   timeval now = { .tv_sec = t, .tv_usec = 0 };  // Create timeval struct
@@ -84,7 +84,7 @@ display.setTextColor(GxEPD_BLACK);
 
   // Display the initial time
   // display.fillScreen(GxEPD_WHITE);
-  display.drawBitmap(0, 0, face3, 200, 200, GxEPD_WHITE);
+  // display.drawBitmap(0, 0, face3, 200, 200, GxEPD_WHITE);
   displayTime();
 
 
@@ -92,17 +92,37 @@ display.setTextColor(GxEPD_BLACK);
 
 void displayTime() {
   char timeString[64];
+  char dateString[64];
   struct tm timeinfo;
   if (getLocalTime(&timeinfo)) {
-    strftime(timeString, sizeof(timeString), "%c", &timeinfo);
-    display.setCursor(0, 30);
-    display.setTextSize(3);
-    display.println(timeString);
+    // Format the time and date separately
+    strftime(timeString, sizeof(timeString), "%H:%M", &timeinfo); // 24-hour time string (e.g., "22:24")
+    strftime(dateString, sizeof(dateString), "%b %d %Y", &timeinfo); // Date string (e.g., "FEB 22 2024")
+
+    display.fillScreen(GxEPD_BLACK);
+    // display.drawBitmap(0, 0, face3, 200, 200, GxEPD_WHITE);
+
+    // Set font for the time
+    display.setFont(&LED_Dot_Matrix12pt7b); // Use an appropriate font for the large time display
+    display.setTextSize(2); // Adjust text size for large display
+    display.setCursor(10, 160); // Position the time
+    display.setTextColor(GxEPD_WHITE); // Set text color
+    display.print(timeString); // Print the time string
+
+    // Set font for the date
+    display.setFont(&LED_Dot_Matrix6pt7b); // Use an appropriate font for the small date display
+    display.setTextSize(1); // Adjust text size for small display
+    display.setCursor(100, 20); // Position the date
+    display.setTextColor(GxEPD_WHITE); // Set text color
+    display.println(dateString); // Print the date string
+
     display.update();
   } else {
     Serial.println("Failed to get time");
   }
 }
+
+
 
 void loop() {
   // Update the display every minute
@@ -110,7 +130,7 @@ void loop() {
   time_t now;
   time(&now);
 
-  if (now - lastTime >= 10) {  // Update the time every minute
+  if (now - lastTime >= 60) {  // Update the time every minute
     lastTime = now;
     display.fillScreen(GxEPD_WHITE);
     displayTime();
